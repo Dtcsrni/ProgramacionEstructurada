@@ -14,10 +14,10 @@ float figurasTriangulo[10][10];
 float figurasRectangulo[10][10];
 float figurasCirculo[10];
 
-float coordenadasCuadrados[10][10];
-float coordenadasTriangulos[10][10];
-float coordenadasRectangulos[10][10];
-float coordenadasCirculo[10][10];
+float coordenadasCuadrados[10][2];
+float coordenadasTriangulos[10][2];
+float coordenadasRectangulos[10][2];
+float coordenadasCirculo[10][2];
 
 // Mensaje de bienvenida
 char mensajeBienvenida[50] = "Bienvenido. Introduce la operacion a realizar \n";
@@ -29,6 +29,7 @@ float calcularAreaCuadrado(float lado);
 float calcularAreaRectangulo(float base, float altura);
 void calcularAreas(int opcion);
 void trasladarCoordenadas(float *x, float *y, float desplazamientoX, float desplazamientoY);
+void crearCuadrado();
 
 int main() {
     printf("%s", mensajeBienvenida);
@@ -71,71 +72,27 @@ void crearCuadrado(){
     int lado = 0;
     float area = 0;
     int cantidadFiguras = 0;
+    
     printf("||Creacion de cuadrado||\n");
     printf("Introduzca el valor del lado en cm:\n");
     scanf("%d", &lado);
     area = calcularAreaCuadrado(lado);
-    cantidadFiguras = sizeof(figurasCuadrado) / sizeof(figurasCuadrado[0]);
-    if(cantidadFiguras == 0){
-        figurasCuadrado[0] = lado;
-        coordenadasCuadrados[0][0] = 10 + cantidadFiguras * 0.5;
-        coordenadasCuadrados[0][1] = 10 + cantidadFiguras * 0.5;
-    } else {
+    
+    // Contar la cantidad de figuras actualmente almacenadas
+    for (int i = 0; i < 10; i++) {
+        if (figurasCuadrado[i] != 0) {
+            cantidadFiguras++;
+        }
+    }
+    
+    if(cantidadFiguras < 10){
         figurasCuadrado[cantidadFiguras] = lado;
         coordenadasCuadrados[cantidadFiguras][0] = 10 + cantidadFiguras * 0.5;
         coordenadasCuadrados[cantidadFiguras][1] = 10 + cantidadFiguras * 0.5;
+        printf("Cuadrado creado con lado de %d cm en la posición (%f, %f)\n", lado, coordenadasCuadrados[cantidadFiguras][0], coordenadasCuadrados[cantidadFiguras][1]);
+    } else {
+        printf("No se pueden crear más cuadrados, el límite es 10.\n");
     }
-}
-
-// Cuenta las figuras de un tipo específico
-int contarFiguras(int tipo){
-    int tamanoFiguras = 0;
-    int tamanoCoordenadasFigurasx = 0;
-    int tamanoCoordenadasFigurasy = 0;
-    switch (tipo)
-    {
-    case 1:
-        tamanoFiguras = sizeof(figurasCuadrado) / sizeof(figurasCuadrado[0]);
-        tamanoCoordenadasFigurasx = sizeof(coordenadasCuadrados) / sizeof(coordenadasCuadrados[0]);
-        break;
-    default:
-        break;
-    }
-    return tamanoFiguras; // Se retorna el tamaño de figuras
-}
-
-// Funciones vacías para crear otras figuras (a implementar)
-void crearCirculo(){}
-void crearRectangulo(){}
-void crearTriangulo(){}
-
-// Calcula el área según la opción seleccionada
-void calcularAreas(int opcion){
-    switch (opcion)
-    {
-    case 1:
-        calcularAreaCirculo(radio);
-        break;
-    case 2: 
-        calcularAreaCuadrado(radio); // Error corregido: lado en vez de radio
-        break;
-    case 3: 
-        calcularAreaRectangulo(x, y); // Error corregido: base y altura
-        break;
-    case 4:
-        calcularAreaTriangulo(x, y); // Error corregido: base y altura
-        break;
-    default:
-        printf("La opcion no es valida\n");
-        break;
-    }
-}
-
-// Calcula el área de un círculo
-float calcularAreaCirculo(float radio){
-    float areaCirculo = PI * radio * radio;
-    printf("El valor del area del circulo es: %f\n", areaCirculo);
-    return areaCirculo;
 }
 
 // Calcula el área de un cuadrado
@@ -143,31 +100,4 @@ float calcularAreaCuadrado(float lado){
     float areaCuadrado = lado * lado;
     printf("El valor del area del cuadrado es: %f\n", areaCuadrado);
     return areaCuadrado;
-}
-
-// Calcula el área de un rectángulo
-float calcularAreaRectangulo(float base, float altura){
-    float areaRectangulo = base * altura;
-    printf("El valor del area del rectangulo es: %f\n", areaRectangulo);
-    return areaRectangulo;
-}
-
-// Calcula el área de un triángulo
-float calcularAreaTriangulo(float base, float altura){
-    float areaTriangulo = (base * altura) / 2;
-    printf("El area del triangulo es: %f\n", areaTriangulo);
-    return areaTriangulo;
-}
-
-// Convierte coordenadas cartesianas a esféricas
-void convertirCartesianoAEsferico(float *x, float *y, float *radio, float *angulo){
-    *radio = sqrt((*x) * (*x) + (*y) * (*y));
-    *angulo = atan2(*y, *x);  
-    printf("Los valores son: angulo: %f, radio: %f\n", *radio, *angulo);
-}
-
-// Traslada coordenadas
-void trasladarCoordenadas(float *x, float *y, float desplazamientoX, float desplazamientoY){
-    *x = *x + desplazamientoX;  // Actualiza el valor de x aplicando la traslación en x
-    *y = *y + desplazamientoY;  // Actualiza el valor de y aplicando la traslación en y
 }
