@@ -13,21 +13,6 @@
  * Autor: I.S.C Erick Renato Vega Ceron
  * Fecha: 2024
  */
-/**
- * Programa para la gestión de figuras geométricas en C.
- *
- * Este programa permite al usuario crear, modificar y eliminar figuras geométricas
- * como cuadrados, círculos, triángulos y rectángulos. El área de cada figura se
- * calcula y almacena junto con sus coordenadas. El programa sigue los principios
- * de la programación estructurada, promoviendo la modularidad y la claridad.
- *
- * En programación estructurada, el código se organiza en funciones y bloques lógicos,
- * lo que facilita su comprensión y mantenimiento. Este paradigma evita el uso de
- * instrucciones GOTO y promueve el uso de estructuras de control bien definidas.
- *
- * Autor: I.S.C Erick Renato Vega Ceron
- * Fecha: 2024
- */
 
 #include <stdio.h>
 #include <math.h>
