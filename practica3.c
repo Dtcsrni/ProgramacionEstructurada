@@ -10,8 +10,8 @@
  * lo que facilita su comprensión y mantenimiento. Este paradigma evita el uso de
  * instrucciones GOTO y promueve el uso de estructuras de control bien definidas.
  *
- * Autor: [Tu Nombre]
- * Fecha: [Fecha Actual]
+ * Autor: I.S.C Erick Renato Vega Ceron
+ * Fecha: 2024
  */
 
 #include <stdio.h>
