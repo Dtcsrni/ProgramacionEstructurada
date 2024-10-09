@@ -15,250 +15,342 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
+#include <windows.h> // Necesario para la función FreeConsole y AllocConsole
 
-#define PI 3.141516
-#define MAX_FIGURAS 10
+#define MAX_FIGURAS 100 // Número máximo de figuras que se pueden almacenar
+#define ANCHO 40        // Ancho del canvas
+#define ALTO 40         // Alto del canvas
+#ifndef M_PI // Definir M_PI si no está definido
+#define M_PI 3.14159265358979323846
+#endif
 
-typedef enum { CUADRADO, CIRCULO, TRIANGULO, RECTANGULO } FiguraTipo;
+// Definición de los tipos de figuras
+typedef enum {
+    CUADRADO,
+    CIRCULO,
+    TRIANGULO,
+    RECTANGULO,
+    ELIPSE,
+    TRAPECIO,
+    ESFERA,
+    MAX_TIPO
+} TipoFigura;
 
-// Declaración de funciones
-void mostrarMenuPrincipal();
-void gestionarFigura(FiguraTipo tipo, const char* accion);
-void mostrarMenuFiguras();
-float calcularArea(FiguraTipo tipo, float dimension1, float dimension2);
+// Estructura para almacenar información de una figura
+typedef struct {
+    TipoFigura tipo;
+    float dimension1; // Dimensión 1 (ej: lado, radio, base)
+    float dimension2; // Dimensión 2 (ej: altura, radio menor, base menor)
+    float dimension3; // Dimensión 3 (ej: altura en el caso de un trapecio)
+} Figura;
 
-// Variables globales y estructuras de datos
-float figurasCuadrado[MAX_FIGURAS];
-float figurasCirculo[MAX_FIGURAS];
-float figurasTriangulo[MAX_FIGURAS][2];  // Base y altura
-float figurasRectangulo[MAX_FIGURAS][2]; // Base y altura
+Figura figuras[MAX_FIGURAS]; // Array de figuras
+int total_figuras = 0; // Contador de figuras agregadas
 
-float coordenadasCuadrados[MAX_FIGURAS][2];
-float coordenadasCirculo[MAX_FIGURAS][2];
-float coordenadasTriangulos[MAX_FIGURAS][2];
-float coordenadasRectangulos[MAX_FIGURAS][2];
-
-// Función principal
-int main() {
-    printf("Bienvenido. Introduce la operacion a realizar\n");
-    mostrarMenuPrincipal();
-    return 0;
-}
-
-// Muestra el menú principal y gestiona la operación seleccionada
-void mostrarMenuPrincipal() {
-    int opcion, tipoFigura;
-    do {
-        printf("1. Crear Figura\n");
-        printf("2. Modificar Figura\n");
-        printf("3. Eliminar Figura\n");
-        printf("4. Salir\n");
-        scanf("%d", &opcion);
-        
-        if (opcion >= 1 && opcion <= 3) {
-            mostrarMenuFiguras();
-            scanf("%d", &tipoFigura);
-            if (tipoFigura >= 1 && tipoFigura <= 4) {
-                gestionarFigura(tipoFigura - 1, opcion == 1 ? "crear" : (opcion == 2 ? "modificar" : "eliminar"));
-            } else {
-                printf("Opción no válida\n");
-            }
-        } else if (opcion != 4) {
-            printf("Opción no válida\n");
-        }
-    } while(opcion != 4);
-}
-
-// Muestra el menú de tipos de figuras
-void mostrarMenuFiguras(){
-    printf("Seleccione el tipo de figura:\n");
-    printf("1. Cuadrado\n");
-    printf("2. Circulo\n");
-    printf("3. Triangulo\n");
-    printf("4. Rectangulo\n");
-}
-
-// Gestiona la creación, modificación o eliminación de una figura
-void gestionarFigura(FiguraTipo tipo, const char* accion) {
-    int idFigura;
-    float dimension1, dimension2;
-    int cantidadFiguras = 0;
-    
-    // Contar la cantidad de figuras actualmente almacenadas
-    for (int i = 0; i < MAX_FIGURAS; i++) {
-        switch(tipo) {
-            case CUADRADO:
-                if (figurasCuadrado[i] != 0) cantidadFiguras++;
-                break;
-            case CIRCULO:
-                if (figurasCirculo[i] != 0) cantidadFiguras++;
-                break;
-            case TRIANGULO:
-                if (figurasTriangulo[i][0] != 0) cantidadFiguras++;
-                break;
-            case RECTANGULO:
-                if (figurasRectangulo[i][0] != 0) cantidadFiguras++;
-                break;
-        }
-    }
-    
-    if (strcmp(accion, "crear") == 0) {
-        if (cantidadFiguras >= MAX_FIGURAS) {
-            printf("No se pueden crear más figuras, el límite es %d.\n", MAX_FIGURAS);
-            return;
-        }
-        
-        printf("Introduzca las dimensiones en cm:\n");
-        if (tipo == CUADRADO || tipo == CIRCULO) {
-            scanf("%f", &dimension1);
-            dimension2 = 0;
-        } else {
-            scanf("%f %f", &dimension1, &dimension2);
-        }
-        
-        switch(tipo) {
-            case CUADRADO:
-                figurasCuadrado[cantidadFiguras] = dimension1;
-                coordenadasCuadrados[cantidadFiguras][0] = 10 + cantidadFiguras * 0.5;
-                coordenadasCuadrados[cantidadFiguras][1] = 10 + cantidadFiguras * 0.5;
-                printf("Cuadrado creado con lado de %.2f cm en la posición (%.2f, %.2f)\n", dimension1, coordenadasCuadrados[cantidadFiguras][0], coordenadasCuadrados[cantidadFiguras][1]);
-                break;
-            case CIRCULO:
-                figurasCirculo[cantidadFiguras] = dimension1;
-                coordenadasCirculo[cantidadFiguras][0] = 10 + cantidadFiguras * 0.5;
-                coordenadasCirculo[cantidadFiguras][1] = 10 + cantidadFiguras * 0.5;
-                printf("Círculo creado con radio de %.2f cm en la posición (%.2f, %.2f)\n", dimension1, coordenadasCirculo[cantidadFiguras][0], coordenadasCirculo[cantidadFiguras][1]);
-                break;
-            case TRIANGULO:
-                figurasTriangulo[cantidadFiguras][0] = dimension1;
-                figurasTriangulo[cantidadFiguras][1] = dimension2;
-                coordenadasTriangulos[cantidadFiguras][0] = 10 + cantidadFiguras * 0.5;
-                coordenadasTriangulos[cantidadFiguras][1] = 10 + cantidadFiguras * 0.5;
-                printf("Triángulo creado con base de %.2f cm y altura de %.2f cm en la posición (%.2f, %.2f)\n", dimension1, dimension2, coordenadasTriangulos[cantidadFiguras][0], coordenadasTriangulos[cantidadFiguras][1]);
-                break;
-            case RECTANGULO:
-                figurasRectangulo[cantidadFiguras][0] = dimension1;
-                figurasRectangulo[cantidadFiguras][1] = dimension2;
-                coordenadasRectangulos[cantidadFiguras][0] = 10 + cantidadFiguras * 0.5;
-                coordenadasRectangulos[cantidadFiguras][1] = 10 + cantidadFiguras * 0.5;
-                printf("Rectángulo creado con base de %.2f cm y altura de %.2f cm en la posición (%.2f, %.2f)\n", dimension1, dimension2, coordenadasRectangulos[cantidadFiguras][0], coordenadasRectangulos[cantidadFiguras][1]);
-                break;
-        }
-        
-    } else {
-        printf("Introduzca el identificador de la figura a %s:\n", accion);
-        scanf("%d", &idFigura);
-        
-        if (idFigura < 0 || idFigura >= MAX_FIGURAS) {
-            printf("Identificador no válido.\n");
-            return;
-        }
-        
-        switch(tipo) {
-            case CUADRADO:
-                if (figurasCuadrado[idFigura] == 0) {
-                    printf("No hay un cuadrado con el identificador %d.\n", idFigura);
-                    return;
-                }
-                if (strcmp(accion, "modificar") == 0) {
-                    printf("Cuadrado actual con id %d: lado = %.2f cm, coordenadas = (%.2f, %.2f)\n", idFigura, figurasCuadrado[idFigura], coordenadasCuadrados[idFigura][0], coordenadasCuadrados[idFigura][1]);
-                    printf("Introduzca el nuevo valor del lado en cm:\n");
-                    scanf("%f", &figurasCuadrado[idFigura]);
-                    printf("Introduzca las nuevas coordenadas (x y):\n");
-                    scanf("%f %f", &coordenadasCuadrados[idFigura][0], &coordenadasCuadrados[idFigura][1]);
-                    printf("Cuadrado modificado: lado = %.2f cm, coordenadas = (%.2f, %.2f)\n", figurasCuadrado[idFigura], coordenadasCuadrados[idFigura][0], coordenadasCuadrados[idFigura][1]);
-                } else {
-                    figurasCuadrado[idFigura] = 0;
-                    coordenadasCuadrados[idFigura][0] = 0;
-                    coordenadasCuadrados[idFigura][1] = 0;
-                    printf("Cuadrado con id %d eliminado.\n", idFigura);
-                }
-                break;
-            case CIRCULO:
-                if (figurasCirculo[idFigura] == 0) {
-                    printf("No hay un círculo con el identificador %d.\n", idFigura);
-                    return;
-                }
-                if (strcmp(accion, "modificar") == 0) {
-                    printf("Círculo actual con id %d: radio = %.2f cm, coordenadas = (%.2f, %.2f)\n", idFigura, figurasCirculo[idFigura], coordenadasCirculo[idFigura][0], coordenadasCirculo[idFigura][1]);
-                    printf("Introduzca el nuevo valor del radio en cm:\n");
-                    scanf("%f", &figurasCirculo[idFigura]);
-                    printf("Introduzca las nuevas coordenadas (x y):\n");
-                    scanf("%f %f", &coordenadasCirculo[idFigura][0], &coordenadasCirculo[idFigura][1]);
-                    printf("Círculo modificado: radio = %.2f cm, coordenadas = (%.2f, %.2f)\n", figurasCirculo[idFigura], coordenadasCirculo[idFigura][0], coordenadasCirculo[idFigura][1]);
-                } else {
-                    figurasCirculo[idFigura] = 0;
-                    coordenadasCirculo[idFigura][0] = 0;
-                    coordenadasCirculo[idFigura][1] = 0;
-                    printf("Círculo con id %d eliminado.\n", idFigura);
-                }
-                break;
-            case TRIANGULO:
-                if (figurasTriangulo[idFigura][0] == 0) {
-                    printf("No hay un triángulo con el identificador %d.\n", idFigura);
-                    return;
-                }
-                if (strcmp(accion, "modificar") == 0) {
-                    printf("Triángulo actual con id %d: base = %.2f cm, altura = %.2f cm, coordenadas = (%.2f, %.2f)\n", idFigura, figurasTriangulo[idFigura][0], figurasTriangulo[idFigura][1], coordenadasTriangulos[idFigura][0], coordenadasTriangulos[idFigura][1]);
-                    printf("Introduzca el nuevo valor de la base en cm:\n");
-                    scanf("%f", &figurasTriangulo[idFigura][0]);
-                    printf("Introduzca el nuevo valor de la altura en cm:\n");
-                    scanf("%f", &figurasTriangulo[idFigura][1]);
-                    printf("Introduzca las nuevas coordenadas (x y):\n");
-                    scanf("%f %f", &coordenadasTriangulos[idFigura][0], &coordenadasTriangulos[idFigura][1]);
-                    printf("Triángulo modificado: base = %.2f cm, altura = %.2f cm, coordenadas = (%.2f, %.2f)\n", figurasTriangulo[idFigura][0], figurasTriangulo[idFigura][1], coordenadasTriangulos[idFigura][0], coordenadasTriangulos[idFigura][1]);
-                } else {
-                    figurasTriangulo[idFigura][0] = 0;
-                    figurasTriangulo[idFigura][1] = 0;
-                    coordenadasTriangulos[idFigura][0] = 0;
-                    coordenadasTriangulos[idFigura][1] = 0;
-                    printf("Triángulo con id %d eliminado.\n", idFigura);
-                }
-                break;
-            case RECTANGULO:
-                if (figurasRectangulo[idFigura][0] == 0) {
-                    printf("No hay un rectángulo con el identificador %d.\n", idFigura);
-                    return;
-                }
-                if (strcmp(accion, "modificar") == 0) {
-                    printf("Rectángulo actual con id %d: base = %.2f cm, altura = %.2f cm, coordenadas = (%.2f, %.2f)\n", idFigura, figurasRectangulo[idFigura][0], figurasRectangulo[idFigura][1], coordenadasRectangulos[idFigura][0], coordenadasRectangulos[idFigura][1]);
-                    printf("Introduzca el nuevo valor de la base en cm:\n");
-                    scanf("%f", &figurasRectangulo[idFigura][0]);
-                    printf("Introduzca el nuevo valor de la altura en cm:\n");
-                    scanf("%f", &figurasRectangulo[idFigura][1]);
-                    printf("Introduzca las nuevas coordenadas (x y):\n");
-                    scanf("%f %f", &coordenadasRectangulos[idFigura][0], &coordenadasRectangulos[idFigura][1]);
-                    printf("Rectángulo modificado: base = %.2f cm, altura = %.2f cm, coordenadas = (%.2f, %.2f)\n", figurasRectangulo[idFigura][0], figurasRectangulo[idFigura][1], coordenadasRectangulos[idFigura][0], coordenadasRectangulos[idFigura][1]);
-                } else {
-                    figurasRectangulo[idFigura][0] = 0;
-                    figurasRectangulo[idFigura][1] = 0;
-                    coordenadasRectangulos[idFigura][0] = 0;
-                    coordenadasRectangulos[idFigura][1] = 0;
-                    printf("Rectángulo con id %d eliminado.\n", idFigura);
-                }
-                break;
-        }
+// Función para calcular el área de la figura
+float calcular_area(TipoFigura tipo, float dim1, float dim2, float dim3) {
+    switch (tipo) {
+        case CUADRADO: return dim1 * dim1;
+        case CIRCULO: return M_PI * dim1 * dim1;
+        case TRIANGULO: return (dim1 * dim2) / 2;
+        case RECTANGULO: return dim1 * dim2;
+        case ELIPSE: return M_PI * dim1 * dim2;
+        case TRAPECIO: return ((dim1 + dim2) * dim3) / 2;
+        case ESFERA: return (4.0 / 3.0) * M_PI * pow(dim1, 3); // Volumen
+        default: return 0.0;
     }
 }
 
-// Calcula el área de la figura
-float calcularArea(FiguraTipo tipo, float dimension1, float dimension2) {
-    float area = 0;
-    switch(tipo) {
+// Función para solicitar datos de la figura
+void solicitar_datos_figura() {
+    TipoFigura tipo;
+    printf("\nSeleccione el tipo de figura a agregar:\n");
+    printf("0 - Cuadrado\n");
+    printf("1 - Círculo\n");
+    printf("2 - Triángulo\n");
+    printf("3 - Rectángulo\n");
+    printf("4 - Elipse\n");
+    printf("5 - Trapecio\n");
+    printf("6 - Esfera\n");
+    printf("Seleccione una opción: ");
+    scanf("%d", (int *)&tipo); // Obtener tipo de figura
+
+    float dim1, dim2 = 0, dim3 = 0;
+    switch (tipo) {
         case CUADRADO:
-            area = dimension1 * dimension1;
+            printf("Ingrese el lado del cuadrado (cm): ");
+            scanf("%f", &dim1);
             break;
         case CIRCULO:
-            area = PI * dimension1 * dimension1;
+            printf("Ingrese el radio del círculo (cm): ");
+            scanf("%f", &dim1);
             break;
         case TRIANGULO:
-            area = (dimension1 * dimension2) / 2;
+            printf("Ingrese la base del triángulo (cm): ");
+            scanf("%f", &dim1);
+            printf("Ingrese la altura del triángulo (cm): ");
+            scanf("%f", &dim2);
             break;
         case RECTANGULO:
-            area = dimension1 * dimension2;
+            printf("Ingrese la base del rectángulo (cm): ");
+            scanf("%f", &dim1);
+            printf("Ingrese la altura del rectángulo (cm): ");
+            scanf("%f", &dim2);
             break;
+        case ELIPSE:
+            printf("Ingrese el radio mayor de la elipse (cm): ");
+            scanf("%f", &dim1);
+            printf("Ingrese el radio menor de la elipse (cm): ");
+            scanf("%f", &dim2);
+            break;
+        case TRAPECIO:
+            printf("Ingrese la base mayor del trapecio (cm): ");
+            scanf("%f", &dim1);
+            printf("Ingrese la base menor del trapecio (cm): ");
+            scanf("%f", &dim2);
+            printf("Ingrese la altura del trapecio (cm): ");
+            scanf("%f", &dim3);
+            break;
+        case ESFERA:
+            printf("Ingrese el radio de la esfera (cm): ");
+            scanf("%f", &dim1);
+            break;
+        default:
+            printf("Tipo de figura no válido.\n");
+            return;
     }
-    printf("El valor del área es: %.2f\n", area);
-    return area;
+
+    // Agregar la figura al array
+    figuras[total_figuras].tipo = tipo;
+    figuras[total_figuras].dimension1 = dim1;
+    figuras[total_figuras].dimension2 = dim2;
+    figuras[total_figuras].dimension3 = dim3;
+    total_figuras++;
+    printf("Figura agregada con ID %d.\n", total_figuras - 1);
+}
+
+// Función para listar las figuras
+void listar_figuras() {
+    printf("\nLista de figuras:\n");
+    for (int i = 0; i < total_figuras; i++) {
+        switch (figuras[i].tipo) {
+            case CUADRADO:
+                printf("ID %d: Cuadrado (Lado: %.2f cm)\n", i, figuras[i].dimension1);
+                break;
+            case CIRCULO:
+                printf("ID %d: Círculo (Radio: %.2f cm)\n", i, figuras[i].dimension1);
+                break;
+            case TRIANGULO:
+                printf("ID %d: Triángulo (Base: %.2f cm, Altura: %.2f cm)\n", i, figuras[i].dimension1, figuras[i].dimension2);
+                break;
+            case RECTANGULO:
+                printf("ID %d: Rectángulo (Base: %.2f cm, Altura: %.2f cm)\n", i, figuras[i].dimension1, figuras[i].dimension2);
+                break;
+            case ELIPSE:
+                printf("ID %d: Elipse (Radio mayor: %.2f cm, Radio menor: %.2f cm)\n", i, figuras[i].dimension1, figuras[i].dimension2);
+                break;
+            case TRAPECIO:
+                printf("ID %d: Trapecio (Base mayor: %.2f cm, Base menor: %.2f cm, Altura: %.2f cm)\n", i, figuras[i].dimension1, figuras[i].dimension2, figuras[i].dimension3);
+                break;
+            case ESFERA:
+                printf("ID %d: Esfera (Radio: %.2f cm)\n", i, figuras[i].dimension1);
+                break;
+            default:
+                printf("ID %d: Figura desconocida.\n", i);
+        }
+    }
+}
+
+// Función para eliminar una figura
+void eliminar_figura(int id) {
+    if (id < 0 || id >= total_figuras) {
+        printf("ID no válido.\n");
+        return;
+    }
+    for (int i = id; i < total_figuras - 1; i++) {
+        figuras[i] = figuras[i + 1]; // Desplazar figuras
+    }
+    total_figuras--; // Disminuir el total de figuras
+    printf("Figura con ID %d eliminada.\n", id);
+}
+
+// Función para modificar una figura
+void modificar_figura(int id) {
+    if (id < 0 || id >= total_figuras) {
+        printf("ID no válido.\n");
+        return;
+    }
+    printf("Modificar figura con ID %d:\n", id);
+    solicitar_datos_figura(); // Se reutiliza la función de solicitud de datos
+    figuras[id] = figuras[total_figuras - 1]; // Reemplazar figura existente
+    total_figuras--; // Disminuir el total de figuras porque se ha agregado una nueva figura
+    printf("Figura con ID %d modificada.\n", id);
+}
+
+// Función para graficar la figura seleccionada
+void graficar_figura(int id) {
+    char canvas[ALTO][ANCHO]; // Canvas para graficar
+    for (int i = 0; i < ALTO; i++)
+        for (int j = 0; j < ANCHO; j++)
+            canvas[i][j] = ' '; // Inicializar el canvas
+
+    // Dibujar el plano cartesiano
+    for (int i = 0; i < ALTO; i++)
+        canvas[i][ANCHO / 2] = '|'; // Línea vertical
+    for (int j = 0; j < ANCHO; j++)
+        canvas[ALTO / 2][j] = '-'; // Línea horizontal
+
+    // Dibujar graduaciones en el plano cartesiano
+    for (int i = 1; i < ALTO; i++) {
+        if (i % 2 == 0) {
+            sprintf(&canvas[i][1], "%d", (ALTO / 2) - i); // Valores de graduación en el eje y
+        }
+    }
+    for (int j = 1; j < ANCHO; j++) {
+        if (j % 5 == 0) {
+            sprintf(&canvas[ALTO / 2][j], "%d", j - (ANCHO / 2)); // Valores de graduación en el eje x
+        }
+    }
+
+    // Graficar la figura seleccionada
+    Figura figura = figuras[id];
+    if (figura.tipo == CIRCULO) {
+        int radio = (int)figura.dimension1;
+        for (int y = -radio; y <= radio; y++) {
+            for (int x = -radio; x <= radio; x++) {
+                if (x * x + y * y <= radio * radio) {
+                    canvas[ALTO / 2 + y][ANCHO / 2 + x] = '*';
+                }
+            }
+        }
+        printf("Dimensiones: Radio = %.2f cm\n", figura.dimension1);
+    } else if (figura.tipo == CUADRADO) {
+        int lado = (int)figura.dimension1;
+        for (int i = 0; i < lado; i++) {
+            for (int j = 0; j < lado; j++) {
+                canvas[ALTO / 2 - lado / 2 + i][ANCHO / 2 - lado / 2 + j] = '*';
+            }
+        }
+        printf("Dimensiones: Lado = %.2f cm\n", figura.dimension1);
+    } else if (figura.tipo == TRIANGULO) {
+        int base = (int)figura.dimension1;
+        int altura = (int)figura.dimension2;
+        for (int i = 0; i <= altura; i++) {
+            for (int j = -base / 2; j <= base / 2; j++) {
+                if (j == -base / 2 + (base / (altura + 1)) * i) {
+                    canvas[ALTO / 2 - i][ANCHO / 2 + j] = '*';
+                }
+                if (j == base / 2 - (base / (altura + 1)) * i) {
+                    canvas[ALTO / 2 - i][ANCHO / 2 + j] = '*';
+                }
+            }
+        }
+        printf("Dimensiones: Base = %.2f cm, Altura = %.2f cm\n", figura.dimension1, figura.dimension2);
+    } else if (figura.tipo == RECTANGULO) {
+        int base = (int)figura.dimension1;
+        int altura = (int)figura.dimension2;
+        for (int i = 0; i < altura; i++) {
+            for (int j = 0; j < base; j++) {
+                canvas[ALTO / 2 - altura / 2 + i][ANCHO / 2 - base / 2 + j] = '*';
+            }
+        }
+        printf("Dimensiones: Base = %.2f cm, Altura = %.2f cm\n", figura.dimension1, figura.dimension2);
+    } else if (figura.tipo == ELIPSE) {
+        int radioMayor = (int)figura.dimension1;
+        int radioMenor = (int)figura.dimension2;
+        for (float y = -radioMenor; y <= radioMenor; y += 0.1) {
+            for (float x = -radioMayor; x <= radioMayor; x += 0.1) {
+                if ((x * x) / (radioMayor * radioMayor) + (y * y) / (radioMenor * radioMenor) <= 1) {
+                    canvas[ALTO / 2 + (int)y][ANCHO / 2 + (int)x] = '*';
+                }
+            }
+        }
+        printf("Dimensiones: Radio mayor = %.2f cm, Radio menor = %.2f cm\n", figura.dimension1, figura.dimension2);
+    } else if (figura.tipo == TRAPECIO) {
+        int baseMayor = (int)figura.dimension1;
+        int baseMenor = (int)figura.dimension2;
+        int altura = (int)figura.dimension3;
+        for (int i = 0; i <= altura; i++) {
+            int b = baseMayor - ((baseMayor - baseMenor) * i) / altura;
+            for (int j = -b / 2; j <= b / 2; j++) {
+                canvas[ALTO / 2 - i][ANCHO / 2 + j] = '*';
+            }
+        }
+        printf("Dimensiones: Base mayor = %.2f cm, Base menor = %.2f cm, Altura = %.2f cm\n", figura.dimension1, figura.dimension2, figura.dimension3);
+    } else if (figura.tipo == ESFERA) {
+        // La esfera no se puede graficar en 2D de manera efectiva, se omite.
+        printf("Dimensiones: Radio = %.2f cm\n", figura.dimension1);
+        printf("Nota: La esfera no se puede graficar en 2D.\n");
+        return;
+    } else {
+        printf("Tipo de figura no reconocido.\n");
+        return;
+    }
+
+    // Mostrar el canvas
+    printf("\nCanvas:\n");
+    for (int i = 0; i < ALTO; i++) {
+        for (int j = 0; j < ANCHO; j++) {
+            putchar(canvas[i][j]);
+        }
+        putchar('\n');
+    }
+}
+
+// Función para crear una nueva consola
+void crear_nueva_consola() {
+    AllocConsole(); // Asigna una nueva consola
+    FILE *nuevo_consola; // Archivo para redirigir stdout
+    freopen("CONOUT$", "w", stdout); // Redirigir stdout a la nueva consola
+}
+
+int main() {
+    crear_nueva_consola(); // Crear una nueva consola
+
+    int opcion, id;
+
+    do {
+        printf("\nMenu:\n");
+        printf("1. Agregar figura\n");
+        printf("2. Listar figuras\n");
+        printf("3. Modificar figura\n");
+        printf("4. Eliminar figura\n");
+        printf("5. Graficar figura\n");
+        printf("6. Salir\n");
+        printf("Seleccione una opción: ");
+        scanf("%d", &opcion);
+
+        switch (opcion) {
+            case 1:
+                solicitar_datos_figura();
+                break;
+            case 2:
+                listar_figuras();
+                break;
+            case 3:
+                printf("Ingrese el ID de la figura a modificar: ");
+                scanf("%d", &id);
+                modificar_figura(id);
+                break;
+            case 4:
+                printf("Ingrese el ID de la figura a eliminar: ");
+                scanf("%d", &id);
+                eliminar_figura(id);
+                break;
+            case 5:
+                printf("Ingrese el ID de la figura a graficar: ");
+                scanf("%d", &id);
+                graficar_figura(id);
+                break;
+            case 6:
+                printf("Saliendo...\n");
+                break;
+            default:
+                printf("Opción no válida. Intente nuevamente.\n");
+        }
+    } while (opcion != 6);
+
+    return 0;
 }
