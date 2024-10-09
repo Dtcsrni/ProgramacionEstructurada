@@ -13,6 +13,21 @@
  * Autor: I.S.C Erick Renato Vega Ceron
  * Fecha: 2024
  */
+/**
+ * Programa para la gestión de figuras geométricas en C.
+ *
+ * Este programa permite al usuario crear, modificar y eliminar figuras geométricas
+ * como cuadrados, círculos, triángulos y rectángulos. El área de cada figura se
+ * calcula y almacena junto con sus coordenadas. El programa sigue los principios
+ * de la programación estructurada, promoviendo la modularidad y la claridad.
+ *
+ * En programación estructurada, el código se organiza en funciones y bloques lógicos,
+ * lo que facilita su comprensión y mantenimiento. Este paradigma evita el uso de
+ * instrucciones GOTO y promueve el uso de estructuras de control bien definidas.
+ *
+ * Autor: I.S.C Erick Renato Vega Ceron
+ * Fecha: 2024
+ */
 
 #include <stdio.h>
 #include <math.h>
@@ -38,6 +53,10 @@ void modificarCuadrado(int idFigura);
 void modificarCirculo(int idFigura);
 void modificarTriangulo(int idFigura);
 void modificarRectangulo(int idFigura);
+void eliminarCuadrado(int idFigura);
+void eliminarCirculo(int idFigura);
+void eliminarTriangulo(int idFigura);
+void eliminarRectangulo(int idFigura);
 
 // Variables globales y estructuras de datos
 float figurasCuadrado[MAX_FIGURAS];
@@ -427,21 +446,3 @@ void eliminarCirculo(int idFigura) {
         printf("No hay un círculo con el identificador %d.\n", idFigura);
         return;
     }
-    
-    figurasCirculo[idFigura] = 0;
-    coordenadasCirculo[idFigura][0] = 0;
-    coordenadasCirculo[idFigura][1] = 0;
-    
-    printf("Círculo con id %d eliminado.\n", idFigura);
-}
-
-// Eliminar un triángulo existente
-void eliminarTriangulo(int idFigura) {
-    if (idFigura < 0 || idFigura >= MAX_FIGURAS || figurasTriangulo[idFigura][0] == 0) {
-        printf("No hay un triángulo con el identificador %d.\n", idFigura);
-        return;
-    }
-    
-    figurasTriangulo[idFigura][0] = 0;
-    figurasTriangulo[idFigura][1] = 0;
-    coordenadasTriangulos[idFigura][0
