@@ -255,9 +255,125 @@ float calcularAreaRectangulo(float base, float altura){
     return area;
 }
 
-// Funciones vacías para modificar y eliminar figuras (a implementar)
-void modificarFigura(){
-    printf("Función de modificación no implementada aún.\n");
+// Modificar una figura existente
+void modificarFigura() {
+    int tipoFigura, indice;
+    
+    printf("Seleccione el tipo de figura a modificar:\n");
+    mostrarMenuFiguras();
+    scanf("%d", &tipoFigura);
+    
+    printf("Seleccione el índice de la figura a modificar (0-%d):\n", MAX_FIGURAS - 1);
+    scanf("%d", &indice);
+    
+    if (indice < 0 || indice >= MAX_FIGURAS) {
+        printf("Índice no válido.\n");
+        return;
+    }
+    
+    switch(tipoFigura) {
+        case 1:
+            modificarCuadrado(indice);
+            break;
+        case 2:
+            modificarCirculo(indice);
+            break;
+        case 3:
+            modificarTriangulo(indice);
+            break;
+        case 4:
+            modificarRectangulo(indice);
+            break;
+        default:
+            printf("Opción no válida\n");
+            break;
+    }
+}
+
+// Modificar un cuadrado existente
+void modificarCuadrado(int indice) {
+    if (figurasCuadrado[indice] == 0) {
+        printf("No hay un cuadrado en el índice %d.\n", indice);
+        return;
+    }
+    
+    printf("Cuadrado actual en el índice %d: lado = %.2f cm, coordenadas = (%.2f, %.2f)\n", 
+           indice, figurasCuadrado[indice], coordenadasCuadrados[indice][0], coordenadasCuadrados[indice][1]);
+    
+    printf("Introduzca el nuevo valor del lado en cm:\n");
+    scanf("%f", &figurasCuadrado[indice]);
+    
+    // Actualizar coordenadas si es necesario
+    printf("Introduzca las nuevas coordenadas (x y):\n");
+    scanf("%f %f", &coordenadasCuadrados[indice][0], &coordenadasCuadrados[indice][1]);
+    
+    printf("Cuadrado modificado: lado = %.2f cm, coordenadas = (%.2f, %.2f)\n", 
+           figurasCuadrado[indice], coordenadasCuadrados[indice][0], coordenadasCuadrados[indice][1]);
+}
+
+// Funciones similares para círculo, triángulo y rectángulo
+void modificarCirculo(int indice) {
+    if (figurasCirculo[indice] == 0) {
+        printf("No hay un círculo en el índice %d.\n", indice);
+        return;
+    }
+    
+    printf("Círculo actual en el índice %d: radio = %.2f cm, coordenadas = (%.2f, %.2f)\n", 
+           indice, figurasCirculo[indice], coordenadasCirculo[indice][0], coordenadasCirculo[indice][1]);
+    
+    printf("Introduzca el nuevo valor del radio en cm:\n");
+    scanf("%f", &figurasCirculo[indice]);
+    
+    // Actualizar coordenadas si es necesario
+    printf("Introduzca las nuevas coordenadas (x y):\n");
+    scanf("%f %f", &coordenadasCirculo[indice][0], &coordenadasCirculo[indice][1]);
+    
+    printf("Círculo modificado: radio = %.2f cm, coordenadas = (%.2f, %.2f)\n", 
+           figurasCirculo[indice], coordenadasCirculo[indice][0], coordenadasCirculo[indice][1]);
+}
+
+void modificarTriangulo(int indice) {
+    if (figurasTriangulo[indice][0] == 0) {
+        printf("No hay un triángulo en el índice %d.\n", indice);
+        return;
+    }
+    
+    printf("Triángulo actual en el índice %d: base = %.2f cm, altura = %.2f cm, coordenadas = (%.2f, %.2f)\n", 
+           indice, figurasTriangulo[indice][0], figurasTriangulo[indice][1], coordenadasTriangulos[indice][0], coordenadasTriangulos[indice][1]);
+    
+    printf("Introduzca el nuevo valor de la base en cm:\n");
+    scanf("%f", &figurasTriangulo[indice][0]);
+    printf("Introduzca el nuevo valor de la altura en cm:\n");
+    scanf("%f", &figurasTriangulo[indice][1]);
+    
+    // Actualizar coordenadas si es necesario
+    printf("Introduzca las nuevas coordenadas (x y):\n");
+    scanf("%f %f", &coordenadasTriangulos[indice][0], &coordenadasTriangulos[indice][1]);
+    
+    printf("Triángulo modificado: base = %.2f cm, altura = %.2f cm, coordenadas = (%.2f, %.2f)\n", 
+           figurasTriangulo[indice][0], figurasTriangulo[indice][1], coordenadasTriangulos[indice][0], coordenadasTriangulos[indice][1]);
+}
+
+void modificarRectangulo(int indice) {
+    if (figurasRectangulo[indice][0] == 0) {
+        printf("No hay un rectángulo en el índice %d.\n", indice);
+        return;
+    }
+    
+    printf("Rectángulo actual en el índice %d: base = %.2f cm, altura = %.2f cm, coordenadas = (%.2f, %.2f)\n", 
+           indice, figurasRectangulo[indice][0], figurasRectangulo[indice][1], coordenadasRectangulos[indice][0], coordenadasRectangulos[indice][1]);
+    
+    printf("Introduzca el nuevo valor de la base en cm:\n");
+    scanf("%f", &figurasRectangulo[indice][0]);
+    printf("Introduzca el nuevo valor de la altura en cm:\n");
+    scanf("%f", &figurasRectangulo[indice][1]);
+    
+    // Actualizar coordenadas si es necesario
+    printf("Introduzca las nuevas coordenadas (x y):\n");
+    scanf("%f %f", &coordenadasRectangulos[indice][0], &coordenadasRectangulos[indice][1]);
+    
+    printf("Rectángulo modificado: base = %.2f cm, altura = %.2f cm, coordenadas = (%.2f, %.2f)\n", 
+           figurasRectangulo[indice][0], figurasRectangulo[indice][1], coordenadasRectangulos[indice][0], coordenadasRectangulos[indice][1]);
 }
 
 void eliminarFigura(){
