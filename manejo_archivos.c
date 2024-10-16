@@ -39,67 +39,70 @@ void cargar_figuras()
     {
         printf("Error al abrir el archivo.\n");
         return 1;
-    }else
+    }
+    else
     {
         printf("Archivo abierto exitosamente\n");
     }
     while (fgets(buffer, 100, f) != NULL)
     {
-         if (totalFiguras >= MAX_FIGURAS)
-    {
-        printf("No se pueden agregar más figuras.\n");
-        return;
-    }
         char *token = strtok(buffer, ",");
-        int tipo;
+        float tipo;
         while (token != NULL)
         {   
-            
-            if(x==0){
-                tipo = atof(token);
-                if(tipo == 1){
+            if (x==0)
+            tipo = atof(token);
+            if (x == 0)
+            {  
+                 if (tipo == 0.0)
+                {
                     figuras[i].tipo = CIRCULO;
-                     printf("Tipo: Circulo\n");
+                    printf("Tipo: Circulo\n");
                 }
-                if (tipo == 2)
+                if (tipo == 1.0)
                 {
                     figuras[i].tipo = CUADRADO;
-                     printf("Tipo: Cuadrado\n");
+                    printf("Tipo: Cuadrado\n");
                 }
-                if (tipo == 3)
+                if (tipo == 2.0)
                 {
                     figuras[i].tipo = TRIANGULO;
-                     printf("Tipo: Triangulo\n");
+                    printf("Tipo: Triangulo\n");
                 }
-                if (tipo == 4)
+                if (tipo == 3.0)
                 {
                     figuras[i].tipo = RECTANGULO;
-                     printf("Tipo: Rectangulo\n");
+                    printf("Tipo: Rectangulo\n");
                 }
-                
+                if (tipo == 4.0)
+                {
+                    figuras[i].tipo = ELIPSE;
+                    printf("Tipo: Elipse\n");
+                }
             }
-            if(x==1){
+            if (x == 1)
+            {
                 figuras[i].dimension1 = atof(token);
             }
-            if (x==2){
+            if (x == 2)
+            {
                 figuras[i].dimension2 = atof(token);
             }
-            if (x==3){
+            if (x == 3)
+            {
                 figuras[i].dimension3 = atof(token);
             }
             token = strtok(NULL, ",");
             x++;
         }
         printf("Figura cargada en identificador %d.\n", i);
-        
-        
-        x=0;
+
+        x = 0;
         i++;
         totalFiguras++;
     }
+    i=0;
     printf("Todas las figuras cargadas exitosamente\n");
-
-    
 }
 // Función para agregar figuras
 void agregar_figura()
@@ -378,7 +381,7 @@ int main()
             break;
         case 6:
             cargar_figuras();
-            break;    
+            break;
         case 9:
             printf("Saliendo...\n");
             exit(0);
