@@ -27,6 +27,15 @@ typedef struct
 
 Figura figuras[MAX_FIGURAS];
 int totalFiguras = 0;
+void guardar_figura_almacenamiento(int identificador){
+
+}
+void eliminar_figura_almacenamiento(int identificador){
+
+}
+void eliminar_todas_figuras_almacenamiento(){
+
+}
 
 void cargar_figuras()
 {
@@ -352,6 +361,7 @@ int main()
         printf("4. Eliminar figura\n");
         printf("5. Graficar figura\n");
         printf("6. Cargar lista de figuras\n");
+        printf("7. Guardar lista de figuras\n");
         printf("9. Salir\n");
         printf("Seleccione una opción: ");
         scanf("%d", &opcion);
@@ -381,6 +391,30 @@ int main()
             break;
         case 6:
             cargar_figuras();
+            break;
+        case 7:
+            printf("¿Que desea hacer?\n");
+            printf("1. Guardar figura en disco\n");
+            printf("2. Eliminar figura de disco\n");
+            printf("3. Borrar todas las figuras de disco\n");
+            scanf("%d", &opcion);
+            switch (opcion)
+            {
+            case 1:
+                printf("Ingrese el ID de la figura a guardar en disco: ");
+                scanf("%d", &id);
+                guardar_figura_almacenamiento(id);
+                break;
+            case 2:
+                printf("Ingrese el ID de la figura a eliminar de disco: ");
+                scanf("%d", &id);
+                eliminar_figura_almacenamiento(id);
+                break;
+            case 3:
+                printf("Borrando todas las figuras de disco...\n");
+                eliminar_todas_figuras_almacenamiento();
+                break;
+            }
             break;
         case 9:
             printf("Saliendo...\n");
